@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.example.demo.dto.SubscriptionRecordDto;
 import com.example.demo.entity.Subscription;
+import com.example.demo.messaging.SubscriptionEventPublisher;
 import com.example.demo.repository.SubscriptionRepository;
 
 import org.springframework.stereotype.Service;
@@ -16,6 +17,9 @@ public class SubscriptionService {
 
     @Autowired
     private SubscriptionRepository subscriptionRepository; // Corrigido para SubscriptionRepository
+
+    @Autowired
+    private SubscriptionEventPublisher eventPublisher; // Corrigido para SubscriptionEventPublisher
 
     // Método atualizado para receber DTO
     public Subscription createSubscription(SubscriptionRecordDto subscriptionDto) {
@@ -30,7 +34,12 @@ public class SubscriptionService {
         subscription.setStartDate(LocalDateTime.now());
         subscription.setEndDate(LocalDateTime.now().plusMonths(1));
         
-        return subscriptionRepository.save(subscription);
+        Subscription savedSubscription = subscriptionRepository.save(subscription);
+
+        // Enviar evento para fila
+        eventPublisher.publishSubscriptionEvent("Nova assinatura criada" + savedSubscription.getId());
+
+        return savedSubscription;
     }
 
 }
