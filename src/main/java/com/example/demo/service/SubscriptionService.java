@@ -37,7 +37,7 @@ public class SubscriptionService {
         Subscription savedSubscription = subscriptionRepository.save(subscription);
 
         // Enviar evento para fila
-        eventPublisher.publishSubscriptionEvent("Nova assinatura criada" + savedSubscription.getId());
+        eventPublisher.publishSubscriptionEvent("Nova assinatura criada" +" id:" + savedSubscription.getId());
 
         return savedSubscription;
     }

@@ -1,38 +1,33 @@
 package com.example.demo.config;
 
-import java.util.Queue;
 
+import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.rabbitmq.client.ConnectionFactory;
 
 @Configuration
 public class RabbitMQConfig {
     public static final String QUEUE_NAME = "subscriptionQueue";
 
     @Bean
-    public Queue queue() {
-        return new Queue(QUEUE_NAME, true);
+    public Queue subscriptionQueue() {
+        return new Queue(QUEUE_NAME, true, false, false); // true = durável
     }
 
-    // @Bean
-    // public RabbitTemplate rabbitTemplate(@Autowired ConnectionFactory connectionFactory){
-    //     RabbitTemplate template = new RabbitTemplate();
-    //     template.setConnectionFactory(connectionFactory);
-    //     template.setMessageConverter(jsonMessageConverter());
+    @Bean
+    public RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory){
+        RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
+        rabbitTemplate.setMessageConverter(jsonMessageConverter());
+        return rabbitTemplate;
+    }
 
-    //     template.setMandatory(true);
-    //     template.setChannelTransacted(true);
+    @Bean
+    public Jackson2JsonMessageConverter jsonMessageConverter(){
+        return new Jackson2JsonMessageConverter();
+    }
 
-    //     return template;
-    // }
-
-    // @Bean
-    // public Jackson2JsonMessageConverter jsonMessageConverter() {
-    //     return new Jackson2JsonMessageConverter();
-    // }
 }

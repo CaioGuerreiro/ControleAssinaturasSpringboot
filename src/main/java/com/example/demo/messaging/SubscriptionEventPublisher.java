@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 
 import com.example.demo.config.RabbitMQConfig;
 
+
 @Component
 public class SubscriptionEventPublisher {
 
