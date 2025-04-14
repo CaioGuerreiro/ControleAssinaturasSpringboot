@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -40,6 +41,14 @@ public class SubscriptionService {
         eventPublisher.publishSubscriptionEvent("Nova assinatura criada" +" id:" + savedSubscription.getId());
 
         return savedSubscription;
+    }
+
+    public Optional<Subscription> findById(Long id) {
+        return subscriptionRepository.findById(id);
+    }
+
+    public Subscription save(Subscription subscription) {
+        return subscriptionRepository.save(subscription);
     }
 
 }
